@@ -9,8 +9,6 @@ import 'package:netflix_ui/screens/profile/authbloc/auth_bloc.dart';
 import 'package:netflix_ui/screens/profile/authbloc/auth_event.dart';
 import 'package:netflix_ui/screens/profile/authbloc/auth_state.dart';
 import 'package:netflix_ui/screens/profile/bloc/profile_bloc.dart';
-import 'package:netflix_ui/screens/profile/bloc/profile_event.dart';
-import 'package:netflix_ui/screens/profile/bloc/profile_state.dart';
 import 'package:netflix_ui/screens/profile/components/profile_card.dart';
 import 'package:profile_repository/profile_repository.dart';
 
@@ -42,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     onSubscription();
   }
 
-  Future<void> onSubscription() async{
+  Future<void> onSubscription() async {
     _subscriptionAuth = authBloc.stream.listen((event) {
       print("subscription event auth profile : $event");
       if (event is LoadedAuth) {
@@ -67,9 +65,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider<ProfileBloc>(
-            create: (BuildContext context) => sl<ProfileBloc>(),
-          ),
           BlocProvider<AuthBloc>(
             create: (BuildContext contest) => sl<AuthBloc>(),
           )
@@ -117,7 +112,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
                   BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
                     print("profile auth state: $state");
                     return Visibility(child: Container(), visible: false);
