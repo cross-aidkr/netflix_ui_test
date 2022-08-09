@@ -1,43 +1,32 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:netflix_ui/screens/profile/bloc/profile_event.dart';
-import 'package:netflix_ui/screens/profile/bloc/profile_state.dart';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:profile_repository/profile_repository.dart';
 
+part 'profile_event.dart';
+
+part 'profile_state.dart';
+
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  final ProfileRepository profileRepository;
-
   ProfileBloc({
-    required this.profileRepository,
-  }) : super(Empty()) {
-    on<GetProfile>(_onGetProfileResponse);
-    on<SaveProfile>(_onSaveProfileResponse);
+    required ProfileRepository profileRepository,
+  })  : _profileRepository = profileRepository,
+        super(InitialState()) {
+    on<ProfileRequested>(_onProfileRequested);
   }
 
-  @override
-  ProfileState get initialState => Empty();
+  final ProfileRepository _profileRepository;
 
-  void _onGetProfileResponse(GetProfile event, Emitter<ProfileState> emit) async {
+  Future<void> _onProfileRequested(
+      ProfileRequested event,
+      Emitter<ProfileState> emit,
+      ) async {
     try {
-      emit(Empty());
-
-      emit(Loading());
-      final result = await profileRepository.fetchProfile();
-      emit(LoadedProfiles(profiles: result));
-    } catch (_) {
-      emit(Error(message: "error"));
+      // emit(LoadingState());
+      final entries = await _profileRepository.fetchProfile();
+      emit(ProfileSuccessState(entries: entries));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(ProfileFailureState());
     }
   }
-
-  void _onSaveProfileResponse(SaveProfile event, Emitter<ProfileState> emit) async {
-    try {
-      emit(Empty());
-
-      emit(Loading());
-      profileRepository.saveProfile(event.profile);
-      emit(LoadedProfile(profile: event.profile));
-    } catch (_) {
-      emit(Error(message: "error"));
-    }
-  }
-
 }

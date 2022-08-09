@@ -1,50 +1,29 @@
-import 'package:equatable/equatable.dart';
-import 'package:profile_repository/profile_repository.dart';
+part of 'profile_bloc.dart';
 
-abstract class ProfileState extends Equatable{
-  ProfileState([List props = const <dynamic>[]]) : super();
+abstract class ProfileState extends Equatable {
+  const ProfileState();
 }
 
-class Empty extends ProfileState {
+class LoadingState extends ProfileState {
   @override
   List<Object?> get props => [];
 }
 
-class Loading extends ProfileState{
+class InitialState extends ProfileState {
   @override
   List<Object?> get props => [];
 }
 
+class ProfileSuccessState extends ProfileState {
+  const ProfileSuccessState({required this.entries});
 
-class LoadedProfiles extends ProfileState{
-  final List<Profile> profiles;
-
-  LoadedProfiles({
-    required this.profiles
-  }) : super();
+  final List<Profile> entries;
 
   @override
-  List<Object?> get props => [profiles];
+  List<Object?> get props => [entries];
 }
 
-class LoadedProfile extends ProfileState{
-  final Profile profile;
-
-  LoadedProfile({
-    required this.profile
-  }) : super();
-
+class ProfileFailureState extends ProfileState {
   @override
-  List<Object?> get props => [profile];
-}
-
-class Error extends ProfileState{
-  final String message;
-
-  Error({
-    required this.message
-  }) : super();
-
-  @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [];
 }
